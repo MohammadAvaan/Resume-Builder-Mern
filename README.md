@@ -5,7 +5,7 @@ A full-stack **Resume Builder web application** built using the MERN stack (Mong
 ---
 
 ## 🚀 Live Demo
-👉 https://your-frontend.vercel.app](https://resume-builder-mern-alpha.vercel.app/
+👉 https://resume-builder-mern-alpha.vercel.app/
 
 ---
 
