@@ -4,6 +4,11 @@ A full-stack **Resume Builder web application** built using the MERN stack (Mong
 
 ---
 
+## 🚀 Live Demo
+👉 https://your-frontend.vercel.app](https://resume-builder-mern-alpha.vercel.app/
+
+---
+
 ## 🚀 Features
 
 - 🔐 User Authentication (Signup / Login)
@@ -119,6 +124,12 @@ npm start
 Frontend will run at:
 http://localhost:3000
 
+## 🌐 Deployment
+
+- Frontend deployed on **Vercel**
+- Backend deployed on **Render**
+
+
 ## 📸 Screenshots
 
 ![Home Page](./screenshots/home.png)
@@ -136,7 +147,7 @@ http://localhost:3000
 **Mohammad Avaan**
 
 - GitHub: https://github.com/MohammadAvaan  
-- LinkedIn: [https://www.linkedin.com/in/mohammad-avaan-989075288/?originalSubdomain=in]
+- LinkedIn: https://www.linkedin.com/in/mohammad-avaan-989075288/?originalSubdomain=in
 
 ## 📄 License
 
