@@ -96,21 +96,27 @@ Follow these steps to run the project locally.
 ### 1. Clone the repository
 
 git clone https://github.com/MohammadAvaan/Resume-Builder-Mern.git
+
 cd Resume-Builder-Mern
 
 ### 2. Setup Backend
 
 cd backend
+
 npm install
 
 Create a .env file inside the backend folder and add:
+
 MONGO_URI=your_mongodb_connection_string
+
 PORT=8000
 
 Run backend server:
+
 node server.js
 
 Backend will run at:
+
 http://localhost:8000
 
 ### 3. Setup Frontend
@@ -118,10 +124,13 @@ http://localhost:8000
 Open a new terminal:
 
 cd frontend
+
 npm install
+
 npm start
 
 Frontend will run at:
+
 http://localhost:3000
 
 ## 🌐 Deployment
