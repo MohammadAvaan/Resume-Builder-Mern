@@ -14,7 +14,7 @@ const app = express();
 // =======================
 app.use(
   cors({
-    origin: "https://resume-builder-mern-alpha.vercel.app", // frontend
+    origin: "https://resume-builder-mern-alpha.vercel.app", // frontend URL
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -35,13 +35,25 @@ connectDB();
 app.use(express.json());
 
 // =======================
+// Helper: Safe Route Paths
+// =======================
+function safeRoutePath(envVar, fallback) {
+  const value = envVar || fallback;
+  // Only use relative paths starting with /
+  if (!value.startsWith("/")) {
+    console.warn(
+      `⚠️ Invalid route path "${value}" detected. Falling back to "${fallback}"`
+    );
+    return fallback;
+  }
+  return value;
+}
+
+// =======================
 // Safe Route Mounting
 // =======================
-
-// Use relative paths ONLY
-// If you want a dynamic BASE_URL, fallback to a safe default
-const AUTH_BASE_URL = process.env.AUTH_BASE_URL || "/api/auth";
-const RESUME_BASE_URL = process.env.RESUME_BASE_URL || "/api/resume";
+const AUTH_BASE_URL = safeRoutePath(process.env.AUTH_BASE_URL, "/api/auth");
+const RESUME_BASE_URL = safeRoutePath(process.env.RESUME_BASE_URL, "/api/resume");
 
 app.use(AUTH_BASE_URL, authRoutes);
 app.use(RESUME_BASE_URL, resumeRoutes);
@@ -71,6 +83,6 @@ console.log("Mounted routes:", listEndpoints(app));
 // Start Server
 // =======================
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () =>
-  console.log(`Server running on port ${PORT}`)
-);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
