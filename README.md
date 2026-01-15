@@ -21,7 +21,7 @@ A full-stack **Resume Builder web application** built using the MERN stack (Mong
 
 ### Frontend
 - React.js  
-- Tailwind  
+- Tailwind CSS
 - Axios  
 
 ### Backend
