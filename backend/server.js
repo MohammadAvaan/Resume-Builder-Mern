@@ -10,32 +10,27 @@ const resumeRoutes = require("./routes/resumeRoutes");
 const app = express();
 
 /* =======================
-   CORS CONFIG (FIXED)
+   CORS CONFIG (NODE 22 SAFE)
 ======================= */
 const allowedOrigins = [
   "http://localhost:5173",
-    /^http:\/\/localhost:\d+$/,
+  "http://localhost:5174",
   "https://resume-builder-mern-alpha.vercel.app",
-  "https://resume-builder-mern-pxhb9kdhm-mohammad-avaans-projects.vercel.app"
+  "https://resume-builder-mern-pxhb9kdhm-mohammad-avaans-projects.vercel.app",
 ];
 
 app.use(
   cors({
-    origin: function (origin, callback) {
+    origin: (origin, callback) => {
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new Error("CORS not allowed"));
+        callback(null, false); // IMPORTANT: no error throw
       }
     },
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
-
-// VERY IMPORTANT: handle preflight
-app.options("*", cors());
 
 /* =======================
    MIDDLEWARE
@@ -48,28 +43,19 @@ app.use(express.json());
 connectDB();
 
 /* =======================
-   ROOT ROUTE (IMPORTANT)
-======================= */
-app.get("/", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "Resume Builder Backend is running 🚀",
-  });
-});
-
-/* =======================
    ROUTES
 ======================= */
+app.get("/", (req, res) => {
+  res.json({ success: true, message: "Backend running 🚀" });
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/resume", resumeRoutes);
 
 /* =======================
-   STATIC FILES
+   STATIC
 ======================= */
-app.use(
-  "/uploads",
-  express.static(path.join(__dirname, "uploads"))
-);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 /* =======================
    SERVER
