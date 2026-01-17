@@ -4,7 +4,7 @@ const User = require("../models/User");
 // Middleware to protect routes
 const protect = async (req, res, next) => {
   try {
-    // 🔥 ALLOW CORS PREFLIGHT REQUESTS
+    // ALLOW CORS PREFLIGHT REQUESTS
     if (req.method === "OPTIONS") {
       return next();
     }
