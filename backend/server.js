@@ -21,16 +21,18 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(null, false); // IMPORTANT: no error throw
-      }
-    },
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "https://resume-builder-mern-alpha.vercel.app",
+      "https://resume-builder-mern-pxhb9kdhm-mohammad-avaans-projects.vercel.app",
+    ],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
 
 /* =======================
    MIDDLEWARE
