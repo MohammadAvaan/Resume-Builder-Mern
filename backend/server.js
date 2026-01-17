@@ -1,23 +1,36 @@
+require("dotenv").config();
 const express = require("express");
-const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
 
-dotenv.config();
-connectDB();
+const authRoutes = require("./routes/authRoutes");
+const resumeRoutes = require("./routes/resumeRoutes");
 
 const app = express();
 
 /* =======================
-   CORS (SAFE – NO app.options)
+   TRUST RENDER PROXY
+======================= */
+app.set("trust proxy", 1);
+
+/* =======================
+   CORS — MUST BE FIRST
 ======================= */
 app.use(
   cors({
-    origin: [
-      "https://resume-builder-mern-alpha.vercel.app",
-      "http://localhost:5173",
-      "http://localhost:3000",
-    ],
+    origin: function (origin, callback) {
+      const allowedOrigins = [
+        "https://resume-builder-mern-alpha.vercel.app",
+        "http://localhost:5173",
+        "http://localhost:3000",
+      ];
+
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -25,25 +38,33 @@ app.use(
 );
 
 /* =======================
-   Body Parsers
+   BODY PARSERS
 ======================= */
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 /* =======================
-   Routes
+   HEALTH CHECK
 ======================= */
 app.get("/", (req, res) => {
   res.json({ success: true, message: "Backend running 🚀" });
 });
 
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/resume", require("./routes/resumeRoutes"));
+/* =======================
+   ROUTES (AFTER CORS)
+======================= */
+app.use("/api/auth", authRoutes);
+app.use("/api/resume", resumeRoutes);
 
 /* =======================
-   Server
+   DATABASE
+======================= */
+connectDB();
+
+/* =======================
+   SERVER
 ======================= */
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, () =>
+  console.log(`Server running on port ${PORT}`)
+);
