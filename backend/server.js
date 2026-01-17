@@ -10,7 +10,7 @@ const resumeRoutes = require("./routes/resumeRoutes");
 const app = express();
 
 /* =======================
-   CORS CONFIG (NODE 22 SAFE)
+   CORS CONFIG (FIXED)
 ======================= */
 const allowedOrigins = [
   "http://localhost:5173",
@@ -21,16 +21,20 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: (origin, callback) => {
+    origin: function (origin, callback) {
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(null, false); // IMPORTANT: no error throw
+        callback(new Error("CORS not allowed"));
       }
     },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
+
+app.options("/*", cors());
 
 /* =======================
    MIDDLEWARE
@@ -43,17 +47,23 @@ app.use(express.json());
 connectDB();
 
 /* =======================
-   ROUTES
+   ROOT ROUTE
 ======================= */
 app.get("/", (req, res) => {
-  res.json({ success: true, message: "Backend running 🚀" });
+  res.status(200).json({
+    success: true,
+    message: "Resume Builder Backend is running 🚀",
+  });
 });
 
+/* =======================
+   ROUTES
+======================= */
 app.use("/api/auth", authRoutes);
 app.use("/api/resume", resumeRoutes);
 
 /* =======================
-   STATIC
+   STATIC FILES
 ======================= */
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
