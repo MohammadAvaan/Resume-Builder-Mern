@@ -9,19 +9,28 @@ const resumeRoutes = require("./routes/resumeRoutes");
 
 const app = express();
 
-/* ---------- CORS FIX ---------- */
+/* ---------- CORS (FIXED) ---------- */
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://resume-builder-mern-alpha.vercel.app",
+];
+
 app.use(
   cors({
-    origin: [
-      "https://resume-builder-mern-alpha.vercel.app",
-    ],
-    credentials: true,
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true); // Postman / server calls
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("Not allowed by CORS"));
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   })
 );
 
-// IMPORTANT: handle preflight explicitly
+// Handle preflight explicitly
 app.options("*", cors());
 
 /* ---------- DB ---------- */
@@ -30,11 +39,12 @@ connectDB();
 /* ---------- Middleware ---------- */
 app.use(express.json());
 
-/* ---------- Routes ---------- */
+/* ---------- Test Route ---------- */
 app.get("/", (req, res) => {
   res.send("Backend is live 🚀");
 });
 
+/* ---------- Routes ---------- */
 app.use("/api/auth", authRoutes);
 app.use("/api/resume", resumeRoutes);
 
@@ -46,6 +56,6 @@ app.use(
 
 /* ---------- Server ---------- */
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () =>
-  console.log(`Server running on port ${PORT}`)
-);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
