@@ -9,20 +9,23 @@ const resumeRoutes = require("./routes/resumeRoutes");
 
 const app = express();
 
-/* ---------- CORS (EXPRESS 5 SAFE) ---------- */
+/* =======================
+   CORS CONFIG (FIXED)
+======================= */
 const allowedOrigins = [
   "http://localhost:5173",
   "https://resume-builder-mern-alpha.vercel.app",
+  "https://resume-builder-mern-pxhb9kdhm-mohammad-avaans-projects.vercel.app"
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed"));
       }
-      return callback(new Error("Not allowed by CORS"));
     },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -30,26 +33,47 @@ app.use(
   })
 );
 
-/* ---------- DB ---------- */
-connectDB();
+// VERY IMPORTANT: handle preflight
+app.options("*", cors());
 
-/* ---------- Middleware ---------- */
+/* =======================
+   MIDDLEWARE
+======================= */
 app.use(express.json());
 
-/* ---------- Test Route ---------- */
+/* =======================
+   DATABASE
+======================= */
+connectDB();
+
+/* =======================
+   ROOT ROUTE (IMPORTANT)
+======================= */
 app.get("/", (req, res) => {
-  res.send("Backend is live 🚀");
+  res.status(200).json({
+    success: true,
+    message: "Resume Builder Backend is running 🚀",
+  });
 });
 
-/* ---------- Routes ---------- */
+/* =======================
+   ROUTES
+======================= */
 app.use("/api/auth", authRoutes);
 app.use("/api/resume", resumeRoutes);
 
-/* ---------- Uploads ---------- */
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+/* =======================
+   STATIC FILES
+======================= */
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"))
+);
 
-/* ---------- Server ---------- */
-const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+/* =======================
+   SERVER
+======================= */
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () =>
+  console.log(`Server running on port ${PORT}`)
+);
