@@ -8,6 +8,8 @@ const axiosInstance = axios.create({
     "Content-Type": "application/json",
     Accept: "application/json",
   },
+  // Optional: only if backend uses cookies
+  withCredentials: true,
 });
 
 // Request Interceptor
@@ -19,21 +21,16 @@ axiosInstance.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 // Response Interceptor
 axiosInstance.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   (error) => {
-    // Handle common errors globally
     if (error.response) {
       if (error.response.status === 401) {
-        // Redirect to login page
+        // Optional: better in context with navigate()
         window.location.href = "/";
       } else if (error.response.status === 500) {
         console.error("Server error. Please try again later.");
