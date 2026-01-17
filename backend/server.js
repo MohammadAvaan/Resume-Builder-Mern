@@ -14,9 +14,9 @@ const app = express();
 ======================= */
 const allowedOrigins = [
   "http://localhost:5173",
-  "http://localhost:5174",
+    /^http:\/\/localhost:\d+$/,
   "https://resume-builder-mern-alpha.vercel.app",
-  "https://resume-builder-mern-pxhb9kdhm-mohammad-avaans-projects.vercel.app",
+  "https://resume-builder-mern-pxhb9kdhm-mohammad-avaans-projects.vercel.app"
 ];
 
 app.use(
@@ -34,7 +34,8 @@ app.use(
   })
 );
 
-app.options("/*", cors());
+// VERY IMPORTANT: handle preflight
+app.options("*", cors());
 
 /* =======================
    MIDDLEWARE
@@ -47,7 +48,7 @@ app.use(express.json());
 connectDB();
 
 /* =======================
-   ROOT ROUTE
+   ROOT ROUTE (IMPORTANT)
 ======================= */
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -65,7 +66,10 @@ app.use("/api/resume", resumeRoutes);
 /* =======================
    STATIC FILES
 ======================= */
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"))
+);
 
 /* =======================
    SERVER
