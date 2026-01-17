@@ -1,31 +1,22 @@
-require("dotenv").config();
 const express = require("express");
+const dotenv = require("dotenv");
 const cors = require("cors");
-const path = require("path");
 const connectDB = require("./config/db");
 
-const authRoutes = require("./routes/authRoutes");
-const resumeRoutes = require("./routes/resumeRoutes");
+dotenv.config();
+connectDB();
 
 const app = express();
 
 /* =======================
-   CORS CONFIG (NODE 22 SAFE)
+   CORS (SAFE – NO app.options)
 ======================= */
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:5174",
-  "https://resume-builder-mern-alpha.vercel.app",
-  "https://resume-builder-mern-pxhb9kdhm-mohammad-avaans-projects.vercel.app",
-];
-
 app.use(
   cors({
     origin: [
-      "http://localhost:5173",
-      "http://localhost:5174",
       "https://resume-builder-mern-alpha.vercel.app",
-      "https://resume-builder-mern-pxhb9kdhm-mohammad-avaans-projects.vercel.app",
+      "http://localhost:5173",
+      "http://localhost:3000",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -33,36 +24,26 @@ app.use(
   })
 );
 
-
 /* =======================
-   MIDDLEWARE
+   Body Parsers
 ======================= */
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 /* =======================
-   DATABASE
-======================= */
-connectDB();
-
-/* =======================
-   ROUTES
+   Routes
 ======================= */
 app.get("/", (req, res) => {
   res.json({ success: true, message: "Backend running 🚀" });
 });
 
-app.use("/api/auth", authRoutes);
-app.use("/api/resume", resumeRoutes);
+app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api/resume", require("./routes/resumeRoutes"));
 
 /* =======================
-   STATIC
-======================= */
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-/* =======================
-   SERVER
+   Server
 ======================= */
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, () =>
-  console.log(`Server running on port ${PORT}`)
-);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
