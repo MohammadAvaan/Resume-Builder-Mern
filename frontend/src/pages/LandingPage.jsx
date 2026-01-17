@@ -105,7 +105,7 @@ const LandingPage = () => {
       </div>
 
       <div className="text-sm bg-gray-50 text-secondary text-center p-5 mt-5">
-        Made by Mohammad Avaan and his team ❤️
+        Made by Mohammad Avaan ❤️
       </div>
 
       <Modal
