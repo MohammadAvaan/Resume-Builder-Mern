@@ -1,5 +1,5 @@
 // utils/apiPaths.js
-export const BASE_URL = "https://resume-builder-mernbackend-dqqd.onrender.com";
+export const BASE_URL = "https://resume-builder-mern-w0xx.onrender.com";
 
 export const API_PATHS = {
   AUTH: {
