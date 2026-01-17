@@ -9,7 +9,7 @@ const resumeRoutes = require("./routes/resumeRoutes");
 
 const app = express();
 
-/* ---------- CORS (FIXED) ---------- */
+/* ---------- CORS (EXPRESS 5 SAFE) ---------- */
 const allowedOrigins = [
   "http://localhost:5173",
   "https://resume-builder-mern-alpha.vercel.app",
@@ -18,7 +18,7 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // Postman / server calls
+      if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
@@ -29,9 +29,6 @@ app.use(
     credentials: true,
   })
 );
-
-// Handle preflight explicitly
-app.options("*", cors());
 
 /* ---------- DB ---------- */
 connectDB();
@@ -49,10 +46,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/resume", resumeRoutes);
 
 /* ---------- Uploads ---------- */
-app.use(
-  "/uploads",
-  express.static(path.join(__dirname, "uploads"))
-);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 /* ---------- Server ---------- */
 const PORT = process.env.PORT || 10000;
